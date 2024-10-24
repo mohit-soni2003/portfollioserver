@@ -7,6 +7,12 @@ const port = 8000;
 
 const Counter = require("./models/count");
 const User = require("./models/user");
+const Project = require("./models/project");
+const achievement = require("./models/achievement");
+const eduqualification = require("./models/eduqualification");
+const personaldetail = require("./models/personaldetail");
+const skills = require("./models/skills");
+const sociallink = require("./models/sociallink");
 const {jwt_secret } = require("../keys.js");
 const requirelogin = require('./middlewares/requirelogin.js');
 
