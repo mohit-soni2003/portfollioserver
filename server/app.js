@@ -15,8 +15,16 @@ const skills = require("./models/skills");
 const sociallink = require("./models/sociallink");
 const {jwt_secret } = require("../keys.js");
 const requirelogin = require('./middlewares/requirelogin.js');
+const cookieParser = require('cookie-parser');
 
-app.use(cors())
+
+app.use(cookieParser());
+app.use(cors({
+    origin: 'http://localhost:3000', // Your React app's URL
+
+    credentials: true // Allow cookies to be sent and received
+
+}))
 app.use(express.json())     //Middleware to parse JSON bodies
 
 mongoose.connect("mongodb+srv://mohit:Indore123@cluster0.wkqzq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -78,8 +86,14 @@ app.post('/adminlogin', (req, res) => {
             const token = jwt.sign({ id: saveUser._id }, jwt_secret);
 
             // Respond with the token or any success message
-            res.cookie("uid",token)
-            return res.json({ message: "Login successful", token: token });
+            // res.cookie("rdffdgdfgf","hello")
+            res.cookie('jwt', token, {
+                httpOnly: true,
+                secure: false, // false for localhost; true in production
+                sameSite: 'None', // Cross-origin support
+                // maxAge: 24 * 60 * 60 * 1000 // 1 day
+             });         
+                return res.json({ message: "Login successful", token: token , user:saveUser});
         })
         .catch((err) => {
             console.log(err);
