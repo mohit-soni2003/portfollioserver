@@ -20,7 +20,8 @@ const cookieParser = require('cookie-parser');
 
 app.use(cookieParser());
 app.use(cors({
-    origin: 'http://localhost:3000', // Your React app's URL
+    // // origin: 'http://localhost:3000', // Your React app's URL
+    // origin: 'https://mohitsoni.vercel.app', // Your React app's URL
 
     credentials: true // Allow cookies to be sent and received
 
