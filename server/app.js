@@ -20,7 +20,7 @@ const cookieParser = require('cookie-parser');
 
 app.use(cookieParser());
 app.use(cors({
-    origin: 'https://mohitsoni.vercel.app', // specify your frontend URL
+    origin: 'https://portfollioserver-one.vercel.app', // specify your frontend URL
     credentials: true, // enable credentials
 }));
 // app.use(cors())
