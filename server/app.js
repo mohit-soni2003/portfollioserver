@@ -19,11 +19,11 @@ const cookieParser = require('cookie-parser');
 
 
 app.use(cookieParser());
-app.use(cors({
-    origin: 'https://portfollioserver-one.vercel.app', // specify your frontend URL
-    credentials: true, // enable credentials
-}));
-// app.use(cors())
+// app.use(cors({
+//     origin: 'https://portfollioserver-one.vercel.app', // specify your frontend URL
+//     credentials: true, // enable credentials
+// }));
+app.use(cors())
 app.use(express.json())     //Middleware to parse JSON bodies
 
 mongoose.connect("mongodb+srv://mohit:Indore123@cluster0.wkqzq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
