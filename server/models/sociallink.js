@@ -30,5 +30,5 @@ const sociallinkSchema = new mongoose.Schema({
     },
     
 })
-module.exports = mongoose.model("Sociallonk",sociallinkSchema);
+module.exports = mongoose.model("Sociallink",sociallinkSchema);
 

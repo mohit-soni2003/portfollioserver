@@ -13,5 +13,11 @@ const personaldetailSchema = new mongoose.Schema({
     email:{
         type:String,
     },
+    photo1:{
+        type:String,
+    },
+    photo2:{
+        type:String,
+    }
 })
 module.exports = mongoose.model("Personaldetail",personaldetailSchema);
