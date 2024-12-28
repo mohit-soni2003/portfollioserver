@@ -13,6 +13,7 @@ const Eduqualification = require("./models/eduqualification");
 const Personaldetail = require("./models/personaldetail");
 const Skills = require("./models/skills");
 const Sociallink = require("./models/sociallink");
+const Contactreq=require("./models/contactreq")
 const { jwt_secret } = require("../keys.js");
 const requirelogin = require('./middlewares/requirelogin.js');
 const cookieParser = require('cookie-parser');
@@ -168,13 +169,13 @@ app.put('/updatesociallink', (req, res) => {
 app.post('/addskill',  (req, res) => {
     const { skillname , percentage} = req.body;
 
-    const skill = new Skills({
+    const skilll = new Skills({
         skillname,
         percentage
 
     })
-
-    skill.save()
+    console.log(skillname)
+    skilll.save()
         .then((res) => {
             console.log(res)
         })
@@ -209,6 +210,21 @@ app.put('/updateskill', (req, res) => {
         .catch((err) => {
             console.error(err);
             res.status(500).json({ error: "Failed to update skill" });
+        });
+});
+// Get route to fetch user's skills
+app.get('/getskills', (req, res) => {
+
+    Skills.find()
+        .then((skills) => {
+            if (skills.length === 0) {
+                return res.status(404).json({ error: "No skills found" });
+            }
+            res.json({ message: "Skills fetched successfully", skills });
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ error: "Failed to fetch skills" });
         });
 });
 
@@ -264,8 +280,21 @@ app.put('/addproject', (req, res) => {
 });
 
 
+app.get('/getpersonaldetail', (req, res) => {
+    Personaldetail.findOne()  // Fetch the single record in the collection
+        .then((personalDetail) => {
+            if (!personalDetail) {
+                return res.status(404).json({ error: "No personal details found" });
+            }
+            res.json({ personalDetail });
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ error: "Failed to retrieve personal details" });
+        });
+});
 app.post('/addpersonaldetail', (req, res) => {
-    const { name, phoneno, whatsappno, email,photo1,photo2} = req.body;
+    const { name, phoneno, whatsappno, email,photo1,photo2,desc1,desc2,desc3} = req.body;
 
     const personalDetail = new Personaldetail({
         name,
@@ -273,7 +302,10 @@ app.post('/addpersonaldetail', (req, res) => {
         whatsappno,
         email,
         photo1,
-        photo2
+        photo2,
+        desc1,
+        desc2,
+        desc3,
     });
 
     personalDetail.save()
@@ -288,11 +320,11 @@ app.post('/addpersonaldetail', (req, res) => {
 });
 
 app.put('/addpersonaldetail', (req, res) => {
-    const { email, name, phoneno, whatsappno, photo1, photo2 } = req.body;
+    const { id, name, email, phoneno, whatsappno, photo1, photo2, desc1, desc2,desc3 } = req.body;
 
-    // Validate that email is provided
-    if (!email) {
-        return res.status(400).json({ error: "Email is required to update personal details" });
+    // Validate that id is provided
+    if (!id) {
+        return res.status(400).json({ error: "ID is required to update personal details" });
     }
 
     // Create an update object with only the fields that are provided
@@ -300,18 +332,22 @@ app.put('/addpersonaldetail', (req, res) => {
     if (name) update.name = name;
     if (phoneno) update.phoneno = phoneno;
     if (whatsappno) update.whatsappno = whatsappno;
+    if (email) update.email = email;
     if (photo1) update.photo1 = photo1;
     if (photo2) update.photo2 = photo2;
+    if (desc1) update.desc1 = desc1;
+    if (desc2) update.desc2 = desc2;
+    if (desc2) update.desc3 = desc3;
 
-    // Update details
+    // Update personal details based on the id using findOneAndUpdate
     Personaldetail.findOneAndUpdate(
-        { email }, // Use email to find the document
-        update, // Fields to update
+        { _id: id }, // Query to find the document by id
+        update,      // Fields to update
         { new: true, runValidators: true } // Return the updated document and run validators
     )
         .then((updatedDetail) => {
             if (!updatedDetail) {
-                return res.status(404).json({ error: "No personal details found for the given email" });
+                return res.status(404).json({ error: "No personal details found for the given id" });
             }
             res.json({ message: "Personal details updated successfully", updatedDetail });
         })
@@ -320,6 +356,7 @@ app.put('/addpersonaldetail', (req, res) => {
             res.status(500).json({ error: "Failed to update personal details" });
         });
 });
+
 
 
 app.post('/addachievement', (req, res) => {
@@ -414,6 +451,43 @@ app.get('/count', async (req, res) => {
         res.status(500).json({ error: 'Something went wrong' });
     }
 })
+app.get("/contactreq", async (req, res) => {
+    try {
+        // Retrieve all documents from the collection
+        const requests = await Contactreq.find();
+        
+        res.status(200).json({
+            message: "Form requests retrieved successfully!",
+            data: requests,
+        });
+    } catch (error) {
+        console.error("Error fetching form requests:", error);
+        res.status(500).json({ message: "An error occurred while retrieving form requests." });
+    }
+});
+app.post("/submit-form", async (req, res) => {
+    try {
+        const { name, phoneno, email, subject, description } = req.body;
+
+        // Create a new document with the current date
+        const contactreq = new Contactreq({
+            name,
+            phoneno,
+            email,
+            subject,
+            description,
+            date: new Date() // Adding the current date
+        });
+
+        // Save to the database
+        await contactreq.save();
+
+        res.status(201).json({ message: "Form data saved successfully!" });
+    } catch (error) {
+        console.error("Error saving form data:", error);
+        res.status(500).json({ message: "An error occurred while saving form data." });
+    }
+});
 
 app.listen(port, () => {
     console.log("Server is running on port " + port)

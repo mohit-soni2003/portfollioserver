@@ -5,7 +5,7 @@ const skillSchema = new mongoose.Schema({
         type:String,
     },
     percentage:{
-        type:Number,
+        type:String,
     }
 })
 module.exports = mongoose.model("Skill",skillSchema);

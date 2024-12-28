@@ -18,6 +18,15 @@ const personaldetailSchema = new mongoose.Schema({
     },
     photo2:{
         type:String,
+    },
+    desc1:{
+        type:String,
+    },
+    desc2:{
+        type:String,
+    },
+    desc3:{
+        type:String,
     }
 })
 module.exports = mongoose.model("Personaldetail",personaldetailSchema);
